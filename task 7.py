@@ -84,41 +84,41 @@ class Puzzle():
         Undo = PreviousMove()
         Finished = False
         while not Finished:
-            self.DisplayPuzzle()
             if Undo.GetUndo() > 0:
+                self.DisplayPuzzle()
                 ask = input("Do you want to undo your last move? Press enter to ignore: ")
-                if len(ask) > 0:
+                if len(ask) != 0:
                     symbol, index = Undo.UndoPreviousMove()
                     self.__Grid[index].ChangeSymbolInCell(symbol)
-            else:
-                print("Current score: " + str(self.__Score))
-                Row = -1
-                Valid = False
-                while not Valid:
-                    try:
-                        Row = int(input("Enter row number: "))
-                        Valid = True
-                    except:
-                        pass
-                Column = -1
-                Valid = False
-                while not Valid:
-                    try:
-                        Column = int(input("Enter column number: "))
-                        Valid = True
-                    except:
-                        pass
-                Symbol = self.__GetSymbolFromUser()
-                self.__SymbolsLeft -= 1
-                CurrentCell = self.__GetCell(Row, Column)
-                if CurrentCell.CheckSymbolAllowed(Symbol):
-                    CurrentCell.ChangeSymbolInCell(Symbol)
-                    Undo.Update(Symbol, (self.__GridSize - Row) * self.__GridSize + Column - 1)
-                    AmountToAddToScore = self.CheckforMatchWithPattern(Row, Column)
-                    if AmountToAddToScore > 0:
-                        self.__Score += AmountToAddToScore
-                if self.__SymbolsLeft == 0:
-                    Finished = True
+            self.DisplayPuzzle()
+            print("Current score: " + str(self.__Score))
+            Row = -1
+            Valid = False
+            while not Valid:
+                try:
+                    Row = int(input("Enter row number: "))
+                    Valid = True
+                except:
+                    pass
+            Column = -1
+            Valid = False
+            while not Valid:
+                try:
+                    Column = int(input("Enter column number: "))
+                    Valid = True
+                except:
+                    pass
+            Symbol = self.__GetSymbolFromUser()
+            self.__SymbolsLeft -= 1
+            CurrentCell = self.__GetCell(Row, Column)
+            if CurrentCell.CheckSymbolAllowed(Symbol):
+                CurrentCell.ChangeSymbolInCell(Symbol)
+                Undo.Update(Symbol, (self.__GridSize - Row) * self.__GridSize + Column - 1)
+                AmountToAddToScore = self.CheckforMatchWithPattern(Row, Column)
+                if AmountToAddToScore > 0:
+                    self.__Score += AmountToAddToScore
+            if self.__SymbolsLeft == 0:
+                Finished = True
         print()
         self.DisplayPuzzle()
         print()
@@ -281,7 +281,7 @@ class PreviousMove(Cell):
 
     def GetUndo(self):
         return len(self.__PreviousSymbols)
-            
+
 
 if __name__ == "__main__":
     Main()
