@@ -131,10 +131,10 @@ class Puzzle():
             Row = -1
                 #Placeholder
             Valid = False
+            save = input("Would you like to save your puzzle? Press enter to ignore: ")
+            if len(save) != 0:
+                self.SavePuzzle()
             while not Valid:
-                save = input("Would you like to save your puzzle? Press enter to ignore: ")
-                if len(save) != 0:
-                    self.SavePuzzle()
                 else:
                     try:
                         Row = int(input("Enter row number: "))
@@ -180,7 +180,7 @@ class Puzzle():
                 f.write(f"{item.GetPatternSequence()[0]},{item.GetPatternSequence()}\n") 
             f.write(f"{self.__GridSize}\n")
             for item in self.__Grid:
-                if item.IsEmpty() is False or :
+                if item.IsEmpty() is False:
                     symbol = item.GetSymbol()
                 else:
                     symbol = ""
