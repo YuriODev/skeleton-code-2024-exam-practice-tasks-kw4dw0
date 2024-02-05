@@ -82,18 +82,24 @@ class Puzzle():
 
     def AttemptPuzzle(self):
         Finished = False
-        SwampTriggered = False
+        #~~~~~~~~~~~~~~~~#
+        SwampTriggered = 0
         warning = -1
+        #~~~~~~~~~~~~~~~~#
         while not Finished:
-            if random.randrange(1, 101) > 75 and not SwampTriggered:
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            if random.randrange(1, 101) > 75 and SwampTriggered == 0:
                 warning = random.randint(2, 4)
                 print(f"In {warning} turns, a swamp will occur.")
-                SwampTriggered = True
-            if SwampTriggered:
+                SwampTriggered += 1
+            if SwampTriggered == 1:
                 if warning > 0:
                     warning -= 1
                 elif warning == 0:
                     self.SwampThisCell()
+                    warning = -1
+                    SwampTriggered = -1
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
             self.DisplayPuzzle()
             print("Current score: " + str(self.__Score))
             Row = -1
@@ -203,6 +209,7 @@ class Puzzle():
                     self.__Grid[index].UpdateCell()
                     verif = True
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 class Pattern():
     def __init__(self, SymbolToUse, PatternString):
         self.__Symbol = SymbolToUse
