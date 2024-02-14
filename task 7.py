@@ -81,9 +81,20 @@ class Puzzle():
             print("Puzzle not loaded")
 
     def AttemptPuzzle(self):
-        Undo = PreviousMove()
+      #~~~~~~~~~~~~~~~~~~~~~~~~#
+      self.Undo = PreviousMove()
+      #~~~~~~~~~~~~~~~~~~~~~~~~#
         Finished = False
         while not Finished:
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+            if self.Undo.GetNumberOfTurns() > 0:
+                print(f"You have {self.Undo.GetNumberOfTurns()} undo/s left.")
+                self.DisplayPuzzle()
+                ask = input("Do you want to undo your last move? Press enter to ignore: ")
+                if len(ask) != 0:
+                    symbol, index = self.UndoPreviousMove()
+                    self.__Grid[index].ChangeSymbolInCell(symbol)
+            #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
             if Undo.GetUndo() > 0:
                 self.DisplayPuzzle()
                 ask = input("Do you want to undo your last move? Press enter to ignore: ")
@@ -113,6 +124,9 @@ class Puzzle():
             CurrentCell = self.__GetCell(Row, Column)
             if CurrentCell.CheckSymbolAllowed(Symbol):
                 CurrentCell.ChangeSymbolInCell(Symbol)
+                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+                self.Undo.Update(Symbol, int((self.__GridSize - Row) * self.__GridSize + Column - 1))
+                #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
                 Undo.Update(Symbol, (self.__GridSize - Row) * self.__GridSize + Column - 1)
                 AmountToAddToScore = self.CheckforMatchWithPattern(Row, Column)
                 if AmountToAddToScore > 0:
@@ -123,7 +137,26 @@ class Puzzle():
         self.DisplayPuzzle()
         print()
         return self.__Score
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  def UndoPreviousMove(self):
+      turns = self.Undo.GetNumberOfTurns()
+      symbol = ""
+      IndexList = self.Undo.GetPreviousPositions()
+      SymbolList = self.Undo.GetPreviousSymbols()
+      if turns < 1:
+          return
+      elif turns == 1:
+          last = IndexList[-1]
+      elif turns > 1:
+          last = IndexList[-1]
+          count = [x for x in range(len(IndexList)) if last == IndexList[x]]
+          if len(count) > 1:
+              symbol = SymbolList[count[-1]]
 
+      SymbolList.pop()
+      IndexList.pop()
+      return symbol, last
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     def __GetCell(self, Row, Column):
         Index = (self.__GridSize - Row) * self.__GridSize + Column - 1
         if Index >= 0:
@@ -249,6 +282,7 @@ class BlockedCell(Cell):
     def CheckSymbolAllowed(self, SymbolToCheck):
         return False
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class PreviousMove(Cell):
     def __init__(self):
         super().__init__()
@@ -257,32 +291,19 @@ class PreviousMove(Cell):
 
     def Update(self, symbol, index):
         self.__PreviousSymbols.append(symbol)
+        print(self.__PreviousSymbols)
         self.__index.append(index)
+        print(self.__index)
 
-    def UndoPreviousMove(self):
-        turns = len(self.__PreviousSymbols)
-        symbol = ""
-        if turns < 1:
-            return
-        elif turns == 1:
-            last = self.__index.pop()
-            self.__PreviousSymbols.pop()
-            return symbol, last
-        elif turns > 1:
-            last = self.__index[-1]
-            count = [x for x in range(len(self.__index)) if last == self.__index[x]]
-            if len(count) == 1:
-                self.__PreviousSymbols.pop()
-            elif len(count) > 1:
-                symbol = self.__PreviousSymbols[count[-1]]
-            self.__PreviousSymbols.pop()
-            self.__index.pop()
-            return symbol, last
-
-    def GetUndo(self):
+    def GetNumberOfTurns(self):
         return len(self.__PreviousSymbols)
 
+    def GetPreviousSymbols(self):
+        return self.__PreviousSymbols
 
+    def GetPreviousPositions(self):
+        return self.__index
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 if __name__ == "__main__":
     Main()
 
