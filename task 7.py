@@ -150,6 +150,7 @@ class Puzzle():
       elif turns > 1:
           last = IndexList[-1]
           count = [x for x in range(len(IndexList)) if last == IndexList[x]]
+          #This is to check if the user has placed mutliple different symbols in the same cell
           if len(count) > 1:
               symbol = SymbolList[count[-1]]
 
