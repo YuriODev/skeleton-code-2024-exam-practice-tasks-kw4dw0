@@ -95,12 +95,6 @@ class Puzzle():
                     symbol, index = self.UndoPreviousMove()
                     self.__Grid[index].ChangeSymbolInCell(symbol)
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-            if Undo.GetUndo() > 0:
-                self.DisplayPuzzle()
-                ask = input("Do you want to undo your last move? Press enter to ignore: ")
-                if len(ask) != 0:
-                    symbol, index = Undo.UndoPreviousMove()
-                    self.__Grid[index].ChangeSymbolInCell(symbol)
             self.DisplayPuzzle()
             print("Current score: " + str(self.__Score))
             Row = -1
@@ -127,7 +121,6 @@ class Puzzle():
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
                 self.Undo.Update(Symbol, int((self.__GridSize - Row) * self.__GridSize + Column - 1))
                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-                Undo.Update(Symbol, (self.__GridSize - Row) * self.__GridSize + Column - 1)
                 AmountToAddToScore = self.CheckforMatchWithPattern(Row, Column)
                 if AmountToAddToScore > 0:
                     self.__Score += AmountToAddToScore
@@ -152,8 +145,8 @@ class Puzzle():
           count = [x for x in range(len(IndexList)) if last == IndexList[x]]
           #This is to check if the user has placed mutliple different symbols in the same cell
           if len(count) > 1:
-              symbol = SymbolList[count[-1]]
-
+              symbol = SymbolList[count[-2]]
+              #Returns the second-to-last symbol placed by the user
       SymbolList.pop()
       IndexList.pop()
       return symbol, last
