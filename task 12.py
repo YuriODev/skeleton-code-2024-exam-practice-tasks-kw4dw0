@@ -83,22 +83,22 @@ class Puzzle():
     def AttemptPuzzle(self):
         Finished = False
         #~~~~~~~~~~~~~~~~#
-        SwampTriggered = 0
+        SwampTriggered = False
         warning = -1
         #~~~~~~~~~~~~~~~~#
         while not Finished:
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-            if random.randrange(1, 101) > 75 and SwampTriggered == 0:
+            if random.randrange(1, 101) > 75 and not SwampTriggered:
                 warning = random.randint(2, 4)
                 print(f"In {warning} turns, a swamp will occur.")
-                SwampTriggered += 1
-            if SwampTriggered == 1:
+                SwampTriggered = True
+            if SwampTriggered:
                 if warning > 0:
                     warning -= 1
                 elif warning == 0:
                     self.SwampThisCell()
                     warning = -1
-                    SwampTriggered = -1
+                    SwampTriggered = False
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
             self.DisplayPuzzle()
             print("Current score: " + str(self.__Score))
